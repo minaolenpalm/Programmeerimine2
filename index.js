@@ -33,6 +33,24 @@ app.get('/api/users/:id', (req, res)=> {
     });
 });
 
+//delete - users
+//required: id
+app.delete('/api/users/:id', (req, res)=> {
+    //console.log(req.params.id);
+    const id=typeof(req.body.id)==='number' ? req.body.id: false;
+    if(id||id===0){
+        users.splice(id, 1);
+        res.status(200).json({
+            success: true,
+            user: users[id]
+        });
+    };
+    res.status(200).json({
+        success: true,
+        //user: users[req.params.id]
+    });
+});
+
 //Post - users
 //required: firstName, lastName, email, password
 //optional: none
