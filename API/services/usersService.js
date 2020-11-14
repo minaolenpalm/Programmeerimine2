@@ -15,7 +15,7 @@ const users = [
         firstName: 'Muki',
         lastName: 'Suki',
         email: 'muki@suki.ee',
-        password: 'koer'
+        password: '$2b$10$9TTC50HTsTxXukOnsONDF.FwBc80pGWiFfZgVRFvp3/FWbHNgP6g6'
     }
 ];
 
@@ -27,12 +27,19 @@ usersService.readByID = (userId) => {
     return users[userId];
 };
 
+usersService.readByEmail = (email) => {
+    const user = users.find(user => user.email === email);
+
+    return user;
+}
+
 //create user
-usersService.create = (user) => {
+usersService.create = async (user) => {
     user.id=users.length;
+    user.password=await hashService.hash(user.password);
     users.push(user);
     const userToReturn = { ... user};
-    delete userToReturn.password;
+    //delete userToReturn.password;
     return userToReturn;
 };
 
@@ -59,7 +66,9 @@ usersService.update = (user) => {
         }
 
         const updatedUser = { ... users[user.id]};
-        delete updatedUser.password;
+        //delete updatedUser.password;
         return updatedUser;
         // Return updated user data
 };
+
+const hashService = require('./hashService');

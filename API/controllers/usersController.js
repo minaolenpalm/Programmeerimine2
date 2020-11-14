@@ -22,7 +22,7 @@ usersController.readById = (req, res) => {
     });
 };
 
-usersController.create = (req, res) => {
+usersController.create = async (req, res) => {
     // Check if provided data is expected type (typeof) and has length when whitespace is removed (.trim().length)
     const firstName = typeof(req.body.firstName) === 'string' && req.body.firstName.trim().length > 0 ? req.body.firstName : false;
     const lastName = typeof(req.body.lastName) === 'string' && req.body.lastName.trim().length > 0 ? req.body.lastName : false;
@@ -32,20 +32,18 @@ usersController.create = (req, res) => {
     // Check if required data exists
     if (firstName && lastName && email && password) {
         // Create new json with user data
-        const newUser = usersService.create(user);
-        
-        // Add user to 'database'
-        users.push(newUser);
+        const user = {
+            firstName,
+            lastName,
+            email,
+            password
+        };
 
-        // Create new json from newUser for response
-        const userToReturn = { ... newUser };
-        // Remove password from user data
-        delete userToReturn.password;
-
+        const newUser = await usersService.create(user);
         // Return data
         res.status(201).json({
             success: true,
-            user: userToReturn
+            user: newUser
         });
     } else {
         // Return error message
@@ -54,7 +52,9 @@ usersController.create = (req, res) => {
             message: 'Required field(s) missing or invalid'
         });
     }
-};
+}
+
+
 
 usersController.kill = (req, res)=> {
     // Check if required data exists

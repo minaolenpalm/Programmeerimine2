@@ -2,11 +2,15 @@ const express = require('express');
 const app = express();
 
 const usersController = require('./API/controllers/usersController');
+const authController = require('./API/controllers/authController');
+const logging = (req, res, next) => {
+    console.log(new Date(), req.url);
+    next();
+}
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-
-
+app.post('/api/login',authController.login);
 
 //get - users
 //required: id
@@ -45,4 +49,3 @@ app.put('/api/users', usersController.update);
 app.listen(3000, () => {
     console.log('server running');
 });
-
